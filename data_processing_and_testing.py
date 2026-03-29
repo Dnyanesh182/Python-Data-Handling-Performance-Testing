@@ -1,60 +1,62 @@
-# UC2 – Analyze space complexity by measuring memory usage during execution
+# UC3 – Read data from CSV file and process structured tabular data
 
-from typing import List
-import sys
+from typing import List, Dict
+import csv
 
 
-class Algorithms:
-    """Class containing sample algorithms."""
-
-    @staticmethod
-    def linear_search(data: List[int], target: int) -> int:
-        for i, value in enumerate(data):
-            if value == target:
-                return i
-        return -1
+class CSVProcessor:
+    """Class to handle CSV reading and processing."""
 
     @staticmethod
-    def binary_search(data: List[int], target: int) -> int:
-        low = 0
-        high = len(data) - 1
+    def read_csv(file_path: str) -> List[Dict[str, str]]:
+        """
+        Read CSV file and return list of records.
 
-        while low <= high:
-            mid = (low + high) // 2
-            if data[mid] == target:
-                return mid
-            elif target < data[mid]:
-                high = mid - 1
-            else:
-                low = mid + 1
-        return -1
+        :param file_path: Path to CSV file
+        :return: List of dictionaries
+        """
+        data: List[Dict[str, str]] = []
 
+        try:
+            with open(file_path, mode="r", newline="") as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    data.append(row)
+        except FileNotFoundError:
+            print("File not found.")
 
-def analyze_space(sizes: List[int]) -> None:
-    """Analyze memory usage for algorithms."""
-    print("Space Complexity Analysis:\n")
+        return data
 
-    for size in sizes:
-        data = list(range(size))
-        target = data[-1] if data else -1
+    @staticmethod
+    def calculate_average_salary(data: List[Dict[str, str]]) -> float:
+        """Calculate average salary from CSV data."""
+        if not data:
+            return 0.0
 
-        # Memory usage of input data
-        input_memory = sys.getsizeof(data)
+        total = 0
+        count = 0
 
-        # Run algorithms (no significant extra space)
-        Algorithms.linear_search(data, target)
-        Algorithms.binary_search(data, target)
+        for row in data:
+            try:
+                total += float(row.get("salary", 0))
+                count += 1
+            except ValueError:
+                continue
 
-        print(f"Input Size: {size}")
-        print(f"Memory Used by Data: {input_memory} bytes")
-        print("-" * 40)
+        return total / count if count else 0.0
 
 
 def main() -> None:
     """Main execution function."""
-    sizes: List[int] = [10, 100, 1000, 10000]
+    file_path = "employees.csv"
 
-    analyze_space(sizes)
+    data = CSVProcessor.read_csv(file_path)
+
+    print("Data:", data)
+
+    avg_salary = CSVProcessor.calculate_average_salary(data)
+
+    print("Average Salary:", avg_salary)
 
 
 if __name__ == "__main__":
