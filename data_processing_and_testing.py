@@ -1,62 +1,49 @@
-# UC3 – Read data from CSV file and process structured tabular data
+# UC4 – Write processed data into CSV file with proper formatting
 
 from typing import List, Dict
 import csv
 
 
-class CSVProcessor:
-    """Class to handle CSV reading and processing."""
+class CSVWriter:
+    """Class to handle writing data to CSV."""
 
     @staticmethod
-    def read_csv(file_path: str) -> List[Dict[str, str]]:
+    def write_csv(file_path: str, data: List[Dict[str, str]]) -> None:
         """
-        Read CSV file and return list of records.
+        Write list of dictionaries to CSV file.
 
-        :param file_path: Path to CSV file
-        :return: List of dictionaries
+        :param file_path: Output CSV file path
+        :param data: List of records
         """
-        data: List[Dict[str, str]] = []
+        if not data:
+            print("No data to write.")
+            return
 
         try:
-            with open(file_path, mode="r", newline="") as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    data.append(row)
-        except FileNotFoundError:
-            print("File not found.")
+            fieldnames = data[0].keys()
 
-        return data
+            with open(file_path, mode="w", newline="") as file:
+                writer = csv.DictWriter(file, fieldnames=fieldnames)
 
-    @staticmethod
-    def calculate_average_salary(data: List[Dict[str, str]]) -> float:
-        """Calculate average salary from CSV data."""
-        if not data:
-            return 0.0
+                writer.writeheader()
+                writer.writerows(data)
 
-        total = 0
-        count = 0
+            print(f"Data successfully written to {file_path}")
 
-        for row in data:
-            try:
-                total += float(row.get("salary", 0))
-                count += 1
-            except ValueError:
-                continue
-
-        return total / count if count else 0.0
+        except Exception as e:
+            print(f"Error writing to CSV: {e}")
 
 
 def main() -> None:
     """Main execution function."""
-    file_path = "employees.csv"
+    data: List[Dict[str, str]] = [
+        {"name": "Alice", "salary": "50000"},
+        {"name": "Bob", "salary": "60000"},
+    ]
 
-    data = CSVProcessor.read_csv(file_path)
+    output_file = "output.csv"
 
-    print("Data:", data)
-
-    avg_salary = CSVProcessor.calculate_average_salary(data)
-
-    print("Average Salary:", avg_salary)
+    CSVWriter.write_csv(output_file, data)
 
 
 if __name__ == "__main__":
