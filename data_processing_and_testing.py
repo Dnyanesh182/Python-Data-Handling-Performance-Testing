@@ -1,7 +1,7 @@
-# UC1 – Analyze time complexity of algorithms using practical input size benchmarking
+# UC2 – Analyze space complexity by measuring memory usage during execution
 
 from typing import List
-import time
+import sys
 
 
 class Algorithms:
@@ -30,27 +30,23 @@ class Algorithms:
         return -1
 
 
-def benchmark(sizes: List[int]) -> None:
-    """Benchmark algorithms with different input sizes."""
-    print("Time Complexity Benchmarking:\n")
+def analyze_space(sizes: List[int]) -> None:
+    """Analyze memory usage for algorithms."""
+    print("Space Complexity Analysis:\n")
 
     for size in sizes:
         data = list(range(size))
         target = data[-1] if data else -1
 
-        # Linear Search
-        start = time.time()
-        Algorithms.linear_search(data, target)
-        linear_time = time.time() - start
+        # Memory usage of input data
+        input_memory = sys.getsizeof(data)
 
-        # Binary Search
-        start = time.time()
+        # Run algorithms (no significant extra space)
+        Algorithms.linear_search(data, target)
         Algorithms.binary_search(data, target)
-        binary_time = time.time() - start
 
         print(f"Input Size: {size}")
-        print(f"Linear Search Time: {linear_time:.6f}s")
-        print(f"Binary Search Time: {binary_time:.6f}s")
+        print(f"Memory Used by Data: {input_memory} bytes")
         print("-" * 40)
 
 
@@ -58,7 +54,7 @@ def main() -> None:
     """Main execution function."""
     sizes: List[int] = [10, 100, 1000, 10000]
 
-    benchmark(sizes)
+    analyze_space(sizes)
 
 
 if __name__ == "__main__":
