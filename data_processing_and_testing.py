@@ -1,47 +1,10 @@
-# UC8 – Compare performance of algorithms using real dataset from CSV/JSON
+# UC9 – Implement unit testing for all use cases using pytest framework
 
 from typing import List
-import csv
-import json
-import time
-
-
-class DataLoader:
-    """Load data from CSV or JSON."""
-
-    @staticmethod
-    def load_csv(file_path: str) -> List[int]:
-        data: List[int] = []
-        try:
-            with open(file_path, "r") as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    try:
-                        data.append(int(row.get("value", 0)))
-                    except ValueError:
-                        continue
-        except FileNotFoundError:
-            print("CSV file not found.")
-        return data
-
-    @staticmethod
-    def load_json(file_path: str) -> List[int]:
-        data: List[int] = []
-        try:
-            with open(file_path, "r") as file:
-                records = json.load(file)
-                for item in records:
-                    try:
-                        data.append(int(item.get("value", 0)))
-                    except (ValueError, AttributeError):
-                        continue
-        except FileNotFoundError:
-            print("JSON file not found.")
-        return data
 
 
 class Algorithms:
-    """Search algorithms for comparison."""
+    """Sample algorithms for testing."""
 
     @staticmethod
     def linear_search(data: List[int], target: int) -> int:
@@ -52,7 +15,6 @@ class Algorithms:
 
     @staticmethod
     def binary_search(data: List[int], target: int) -> int:
-        data.sort()
         low, high = 0, len(data) - 1
 
         while low <= high:
@@ -66,38 +28,32 @@ class Algorithms:
         return -1
 
 
-def compare(data: List[int]) -> None:
-    """Compare algorithm performance."""
-    if not data:
-        print("No data available.")
-        return
+# ----------- Pytest Test Cases -----------
 
-    target = data[-1]
+def test_linear_search_found():
+    assert Algorithms.linear_search([1, 2, 3, 4], 3) == 2
 
-    start = time.time()
-    Algorithms.linear_search(data, target)
-    linear_time = time.time() - start
 
-    start = time.time()
-    Algorithms.binary_search(data.copy(), target)
-    binary_time = time.time() - start
+def test_linear_search_not_found():
+    assert Algorithms.linear_search([1, 2, 3, 4], 5) == -1
 
-    print(f"Dataset Size: {len(data)}")
-    print(f"Linear Search Time: {linear_time:.6f}s")
-    print(f"Binary Search Time: {binary_time:.6f}s")
-    print("-" * 40)
+
+def test_binary_search_found():
+    assert Algorithms.binary_search([1, 2, 3, 4, 5], 4) == 3
+
+
+def test_binary_search_not_found():
+    assert Algorithms.binary_search([1, 2, 3, 4, 5], 6) == -1
+
+
+def test_empty_input():
+    assert Algorithms.linear_search([], 1) == -1
+    assert Algorithms.binary_search([], 1) == -1
 
 
 def main() -> None:
-    """Main execution function."""
-    csv_data = DataLoader.load_csv("data.csv")
-    json_data = DataLoader.load_json("data.json")
-
-    print("CSV Data Performance:")
-    compare(csv_data)
-
-    print("JSON Data Performance:")
-    compare(json_data)
+    """Dummy main for execution."""
+    print("Run 'pytest' command to execute test cases.")
 
 
 if __name__ == "__main__":

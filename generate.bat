@@ -1,2 +1,0 @@
-@echo off
-python -c "import csv, json, random; random.seed(42); f1=open('data.csv','w',newline=''); w=csv.DictWriter(f1,fieldnames=['value']); w.writeheader(); [w.writerow({'value':random.randint(1,1000000)}) for _ in range(100000)]; f1.close(); print('CSV created'); d=[{'value':random.randint(1,1000000)} for _ in range(100000)]; f2=open('data.json','w'); json.dump(d,f2); f2.close(); print('JSON created with 100,000 rows')"
