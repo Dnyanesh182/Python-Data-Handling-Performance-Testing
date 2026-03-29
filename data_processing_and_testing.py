@@ -1,32 +1,35 @@
-# UC6 – Write structured data into JSON file using serialization
+# UC7 – Handle nested JSON objects and perform data extraction and transformation
 
 from typing import List, Dict, Any
-import json
 
 
-class JSONWriter:
-    """Class to handle JSON writing."""
+class JSONTransformer:
+    """Class to handle nested JSON transformation."""
 
     @staticmethod
-    def write_json(file_path: str, data: List[Dict[str, Any]]) -> None:
+    def transform(data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
-        Write structured data to JSON file.
+        Transform nested JSON into flat structure.
 
-        :param file_path: Output file path
-        :param data: Data to serialize
+        :param data: Nested JSON data
+        :return: Flattened data
         """
-        if not data:
-            print("No data to write.")
-            return
+        result: List[Dict[str, Any]] = []
 
-        try:
-            with open(file_path, "w") as file:
-                json.dump(data, file, indent=4)
+        for item in data:
+            try:
+                employee = item.get("employee", {})
+                name = employee.get("name", "Unknown")
+                salary = employee.get("salary", 0)
 
-            print(f"Data successfully written to {file_path}")
+                result.append({
+                    "name": name,
+                    "salary": salary
+                })
+            except Exception:
+                continue
 
-        except Exception as e:
-            print(f"Error writing JSON: {e}")
+        return result
 
 
 def main() -> None:
@@ -34,11 +37,14 @@ def main() -> None:
     data: List[Dict[str, Any]] = [
         {"employee": {"name": "Alice", "salary": 50000}},
         {"employee": {"name": "Bob", "salary": 60000}},
+        {"employee": {"name": "Charlie"}},  # missing salary
     ]
 
-    output_file = "output.json"
+    print("Original Data:", data)
 
-    JSONWriter.write_json(output_file, data)
+    transformed = JSONTransformer.transform(data)
+
+    print("Transformed Data:", transformed)
 
 
 if __name__ == "__main__":
