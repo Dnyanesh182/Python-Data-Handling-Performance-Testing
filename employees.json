@@ -1,0 +1,29 @@
+[
+  {
+    "employee": {
+      "id": 1,
+      "name": "Alice Johnson",
+      "department": "Engineering"
+    }
+  },
+  {
+    "employee": {
+      "id": 2,
+      "name": "Bob Smith",
+      "department": "Finance"
+    }
+  },
+  {
+    "employee": {
+      "id": 3,
+      "name": "Carol Lee",
+      "department": "HR"
+    }
+  },
+  {
+    "employee": {
+      "id": 4,
+      "department": "Operations"
+    }
+  }
+]

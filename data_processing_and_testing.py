@@ -1,49 +1,55 @@
-# UC4 – Write processed data into CSV file with proper formatting
+# UC5 – Read JSON file and parse nested data structures
 
-from typing import List, Dict
-import csv
+from typing import List, Dict, Any
+import json
 
 
-class CSVWriter:
-    """Class to handle writing data to CSV."""
+class JSONProcessor:
+    """Class to handle JSON reading and parsing."""
 
     @staticmethod
-    def write_csv(file_path: str, data: List[Dict[str, str]]) -> None:
+    def read_json(file_path: str) -> List[Dict[str, Any]]:
         """
-        Write list of dictionaries to CSV file.
+        Read JSON file and return data.
 
-        :param file_path: Output CSV file path
-        :param data: List of records
+        :param file_path: Path to JSON file
+        :return: Parsed JSON data
         """
-        if not data:
-            print("No data to write.")
-            return
-
         try:
-            fieldnames = data[0].keys()
+            with open(file_path, "r") as file:
+                return json.load(file)
+        except FileNotFoundError:
+            print("File not found.")
+        except json.JSONDecodeError:
+            print("Invalid JSON format.")
 
-            with open(file_path, mode="w", newline="") as file:
-                writer = csv.DictWriter(file, fieldnames=fieldnames)
+        return []
 
-                writer.writeheader()
-                writer.writerows(data)
+    @staticmethod
+    def extract_names(data: List[Dict[str, Any]]) -> List[str]:
+        """Extract names from nested JSON structure."""
+        names: List[str] = []
 
-            print(f"Data successfully written to {file_path}")
+        for item in data:
+            try:
+                names.append(item["employee"]["name"])
+            except KeyError:
+                continue
 
-        except Exception as e:
-            print(f"Error writing to CSV: {e}")
+        return names
 
 
 def main() -> None:
     """Main execution function."""
-    data: List[Dict[str, str]] = [
-        {"name": "Alice", "salary": "50000"},
-        {"name": "Bob", "salary": "60000"},
-    ]
+    file_path = "employees.json"
 
-    output_file = "output.csv"
+    data = JSONProcessor.read_json(file_path)
 
-    CSVWriter.write_csv(output_file, data)
+    print("Raw Data:", data)
+
+    names = JSONProcessor.extract_names(data)
+
+    print("Extracted Names:", names)
 
 
 if __name__ == "__main__":
